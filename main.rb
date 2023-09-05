@@ -10,11 +10,11 @@ require_relative 'teacher'
 person = Person.new(age: 20, name: 'John Doe', parent_permission: false)
 puts "Original Name: #{person.correct_name}"
 
-capitalized_person = CapitalizeDecorator.new(person)
-puts "Capitalized Name: #{capitalized_person.correct_name}"
-
 capitalized_trimmed_person = TrimmerDecorator.new(capitalized_person)
 puts "Capitalized and Trimmed Name: #{capitalized_trimmed_person.correct_name}"
+
+capitalized_person = CapitalizeDecorator.new(person)
+puts "Capitalized Name: #{capitalized_person.correct_name}"
 
 student = Student.new('Alice', 16, true, 'Class A')
 puts "Student ID: #{student.id}"
