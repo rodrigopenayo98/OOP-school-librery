@@ -155,7 +155,8 @@ To run linter tests, run the following command:
 
 ## 🔭 Future Features <a name="future-features"></a>
 
-- **No Update at The Moment**
+- **Add information about students' tutorss**
+- **Add yearly subject lists**
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

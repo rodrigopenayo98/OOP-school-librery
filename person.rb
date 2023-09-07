@@ -34,6 +34,6 @@ class Person < Nameable
   end
 
   def generate_id
-    SecureRandom.uuid
+    Random.rand(1...1000)
   end
 end
