@@ -148,6 +148,7 @@ To run linter tests, run the following command:
 - Twitter: [@rodrigopenayo98](https://twitter.com/rodrigopenayo98)
 - LinkedIn: [LinkedIn](https://www.linkedin.com/in/rodrigo-penayo-391226158/)
 
+
 👤 **kirti Arora**
 
 - GitHub: [@kit0-0](https://github.com/kit0-0?tab=repositories)
@@ -161,7 +162,6 @@ To run linter tests, run the following command:
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 
 ## 🔭 Future Features <a name="future-features"></a>
