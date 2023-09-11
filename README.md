@@ -148,20 +148,6 @@ To run linter tests, run the following command:
 - Twitter: [@rodrigopenayo98](https://twitter.com/rodrigopenayo98)
 - LinkedIn: [LinkedIn](https://www.linkedin.com/in/rodrigo-penayo-391226158/)
 
-👤 **kirti Arora**
-
-- GitHub: [@kit0-0](https://github.com/kit0-0?tab=repositories)
-- LinkedIn: [LinkedIn](https://www.linkedin.com/in/kirtiar/)
-
-👤 **Lala Aicha EL Vadel**
-
-- GitHub: [Leloufadel](https://github.com/leloufadel)
-- LinkedIn: [Lala Aicha ](https://www.linkedin.com/in/lalaaicha-elvadel/)
-- Twitter: [@twitterhandle](https://twitter.com/leloufadel)
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
 ## 🔭 Future Features <a name="future-features"></a>
 
 - **Add information about students' tutorss**
