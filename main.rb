@@ -10,4 +10,4 @@ class Main
   end
 end
 
-Main.new.run if _FILE_ == $PROGRAM_NAME
+Main.new.run if __FILE__ == $PROGRAM_NAME
