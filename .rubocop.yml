@@ -16,9 +16,9 @@ Metrics/AbcSize:
 Metrics/ClassLength:
   Max: 200
 Metrics/BlockLength:
-  AllowedMethods:
-    - "describe"
+  IgnoredMethods: ['describe']
   Max: 30
+
 
 Style/Documentation:
   Enabled: false
@@ -32,8 +32,6 @@ Style/DefWithParentheses:
   Enabled: false
 Style/FrozenStringLiteralComment:
   EnforcedStyle: never
-Layout/EndOfLine:
-  EnforcedStyle: crlf
 
 Layout/HashAlignment:
   EnforcedColonStyle: key
@@ -52,3 +50,7 @@ Style/HashTransformKeys:
   Enabled: false
 Style/HashTransformValues:
   Enabled: false
+Layout/EndOfLine:
+  EnforcedStyle: crlf
+  Enabled: true
+  AutoCorrect: true
