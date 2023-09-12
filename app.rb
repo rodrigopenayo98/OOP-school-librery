@@ -173,6 +173,7 @@ class App
       @people = []
     end
   end
+
   def save_rentals_to_json
     File.open('rentals.json', 'w') do |file|
       file.puts @rentals.to_json
@@ -180,15 +181,15 @@ class App
   end
 
   def load_rentals_from_json
-    if File.exist?('rentals.json')
-      @rentals = JSON.parse(File.read('rentals.json')).map do |rental_data|
-        book = @books.find { |book| book.title == rental_data['book']['title'] }
-        person = @people.find { |person| person.id == rental_data['person']['id'] }
-        Rental.new(rental_data['date'], book, person)
-      end
-    else
-      @rentals = []
-    end
+    @rentals = if File.exist?('rentals.json')
+                 JSON.parse(File.read('rentals.json')).map do |rental_data|
+                   book = @books.find { |book| book.title == rental_data['book']['title'] }
+                   person = @people.find { |person| person.id == rental_data['person']['id'] }
+                   Rental.new(rental_data['date'], book, person)
+                 end
+               else
+                 []
+               end
   end
 
   # to data project --------------------------
