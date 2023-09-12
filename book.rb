@@ -16,7 +16,7 @@ class Book
     {
       title: @title,
       author: @author
-    }
+    }.to_json
   end
   # to data project --------------------------
 end
