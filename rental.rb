@@ -11,12 +11,13 @@ class Rental
   end
 
   # to data project --------------------------
-  def to_json(*_args)
-    {
-      date: @date,
-      book: @book.to_json,
-      person: @person.to_json
-    }
-  end
+  def to_json(_options = {})
+  {
+    date: @date,
+    book: @book.to_json,
+    person: @person.to_json
+  }.to_json
+end
+
   # to data project --------------------------
 end
