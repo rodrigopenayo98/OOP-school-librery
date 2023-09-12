@@ -7,14 +7,15 @@ require_relative 'classroom'
 require 'json'
 
 class App
+  @@loaded_data = false
+
   def initialize
-    @books = []
-    @people = []
-    @rentals = []
-    # load_books_from_json if File.exist?('books.json')
-    load_people_from_json if File.exist?('people.json')
-    # load_rentals_from_json if File.exist?('rentals.json')
-  end
+  @books = []
+  @people = []
+  @rentals = []
+  load_people_from_json if File.exist?('people.json')
+end
+
 
   def create_person
     print 'Do you want to create a student (1) or a teacher (2)? [Input the number]: '
@@ -54,7 +55,9 @@ class App
     person = Teacher.new(age, specialization, name: name)
     @people.push(person)
     puts "Teacher '#{name}' created successfully"
+    save_people_to_json
   end
+  
 
   def create_book
     print 'Title: '
@@ -157,12 +160,17 @@ class App
     if File.exist?('people.json')
       begin
         @people = JSON.parse(File.read('people.json')).map do |person_data|
-          if person_data['type'] == 'Student'
-            Student.new(person_data['name'], person_data['age'], person_data['parent_permission'])
-          elsif person_data['type'] == 'Teacher'
-            Teacher.new(person_data['name'], person_data['age'], person_data['specialization'])
+          if person_data.is_a?(Hash) && person_data.key?('type')
+            if person_data['type'] == 'Student'
+              Student.new(person_data['name'], person_data['age'], person_data['parent_permission'])
+            elsif person_data['type'] == 'Teacher'
+              Teacher.new(person_data['name'], person_data['age'], person_data['specialization'])
+            end
+          else
+            puts "Error: Datos JSON inválidos."
+            nil
           end
-        end
+        end.compact # Eliminar elementos nulos si los hay
       rescue JSON::ParserError => e
         puts "Error al analizar el archivo JSON: #{e.message}"
         @people = []
@@ -171,6 +179,8 @@ class App
       @people = []
     end
   end
+  
+  
   
   
   # def save_rentals_to_json
