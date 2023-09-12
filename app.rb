@@ -8,14 +8,12 @@ require 'json'
 
 class App
   @@loaded_data = false
-
   def initialize
-  @books = []
-  @people = []
-  @rentals = []
-  load_people_from_json if File.exist?('people.json')
-end
-
+    @books = []
+    @people = []
+    @rentals = []
+    load_people_from_json if File.exist?('people.json')
+  end
 
   def create_person
     print 'Do you want to create a student (1) or a teacher (2)? [Input the number]: '
@@ -43,7 +41,6 @@ end
     puts "Student '#{name}' created successfully"
     save_people_to_json
   end
-  
 
   def create_teacher
     print 'Age: '
@@ -57,8 +54,8 @@ end
     puts "Teacher '#{name}' created successfully"
     save_people_to_json
   end
-  
 
+  # Modify the create_book method in app.rb
   def create_book
     print 'Title: '
     title = gets.chomp
@@ -67,7 +64,24 @@ end
     book = Book.new(title, author)
     @books.push(book)
     puts "Book '#{title}' created successfully"
-    save_books_to_json
+    save_books_to_json # Save the updated book list to books.json
+  end
+
+  # Add or modify the following methods in app.rb to save and load books from books.json
+  def save_books_to_json
+    File.open('books.json', 'w') do |file|
+      file.puts @books.map(&:to_json).to_json
+    end
+  end
+
+  def load_books_from_json
+    @books = if File.exist?('books.json')
+               JSON.parse(File.read('books.json')).map do |book_data|
+                 Book.new(book_data['title'], book_data['author'])
+               end
+             else
+               []
+             end
   end
 
   def create_rental
@@ -126,34 +140,14 @@ end
     end
   end
 
-  # to data project --------------------------
-
-  # def save_books_to_json
-  #   File.open('books.json', 'w') do |file|
-  #     file.puts @books.to_json
-  #   end
-  # end
-
-  # def load_books_from_json
-  #   if File.exist?('books.json')
-  #     @books = JSON.parse(File.read('books.json')).map do |book_data|
-  #       Book.new(book_data['title'], book_data['author'])
-  #     end
-  #   else
-  #     @books = []
-  #   end
-  # end
-
   def save_people_to_json
-    begin
-      File.open('people.json', 'w') do |file|
-        file.puts @people.to_json
-      end
-    rescue JSON::GeneratorError => e
-      puts "Error al generar JSON: #{e.message}"
-    rescue StandardError => e
-      puts "Error desconocido al guardar datos en JSON: #{e.message}"
+    File.open('people.json', 'w') do |file|
+      file.puts @people.to_json
     end
+  rescue JSON::GeneratorError => e
+    puts "Error al generar JSON: #{e.message}"
+  rescue StandardError => e
+    puts "Error desconocido al guardar datos en JSON: #{e.message}"
   end
 
   def load_people_from_json
@@ -167,7 +161,7 @@ end
               Teacher.new(person_data['name'], person_data['age'], person_data['specialization'])
             end
           else
-            puts "Error: At the moment the people JSON file is empty."
+            puts 'Error: At the moment the people JSON file is empty.'
             nil
           end
         end.compact # Eliminar elementos nulos si los hay
@@ -179,10 +173,6 @@ end
       @people = []
     end
   end
-  
-  
-  
-  
   # def save_rentals_to_json
   #   File.open('rentals.json', 'w') do |file|
   #     file.puts @rentals.to_json
