@@ -167,7 +167,7 @@ end
               Teacher.new(person_data['name'], person_data['age'], person_data['specialization'])
             end
           else
-            puts "Error: Datos JSON inválidos."
+            puts "Error: At the moment the people JSON file is empty."
             nil
           end
         end.compact # Eliminar elementos nulos si los hay
