@@ -4,12 +4,16 @@ require_relative 'teacher'
 require_relative 'book'
 require_relative 'rental'
 require_relative 'classroom'
+require 'json'
 
 class App
   def initialize
     @books = []
     @people = []
     @rentals = []
+    # load_books_from_json if File.exist?('books.json')
+    load_people_from_json if File.exist?('people.json')
+    # load_rentals_from_json if File.exist?('rentals.json')
   end
 
   def create_person
@@ -31,11 +35,14 @@ class App
     print 'Name: '
     name = gets.chomp
     print 'Has parent permission? [Y/N]: '
-    parent_permission = gets.chomp
+    parent_permission_input = gets.chomp.downcase
+    parent_permission = parent_permission_input == 'y'
     person = Student.new(name, age, parent_permission)
     @people.push(person)
     puts "Student '#{name}' created successfully"
+    save_people_to_json
   end
+  
 
   def create_teacher
     print 'Age: '
@@ -57,6 +64,7 @@ class App
     book = Book.new(title, author)
     @books.push(book)
     puts "Book '#{title}' created successfully"
+    save_books_to_json
   end
 
   def create_rental
@@ -75,6 +83,7 @@ class App
     date = gets.chomp
     @rentals.push(Rental.new(date, @books[book_index], @people[person_index]))
     puts 'Rental created successfully'
+    save_rentals_to_json
   end
 
   def list_books
@@ -113,6 +122,76 @@ class App
       break if choice == 7
     end
   end
+
+  # to data project --------------------------
+
+  # def save_books_to_json
+  #   File.open('books.json', 'w') do |file|
+  #     file.puts @books.to_json
+  #   end
+  # end
+
+  # def load_books_from_json
+  #   if File.exist?('books.json')
+  #     @books = JSON.parse(File.read('books.json')).map do |book_data|
+  #       Book.new(book_data['title'], book_data['author'])
+  #     end
+  #   else
+  #     @books = []
+  #   end
+  # end
+
+  def save_people_to_json
+    begin
+      File.open('people.json', 'w') do |file|
+        file.puts @people.to_json
+      end
+    rescue JSON::GeneratorError => e
+      puts "Error al generar JSON: #{e.message}"
+    rescue StandardError => e
+      puts "Error desconocido al guardar datos en JSON: #{e.message}"
+    end
+  end
+
+  def load_people_from_json
+    if File.exist?('people.json')
+      begin
+        @people = JSON.parse(File.read('people.json')).map do |person_data|
+          if person_data['type'] == 'Student'
+            Student.new(person_data['name'], person_data['age'], person_data['parent_permission'])
+          elsif person_data['type'] == 'Teacher'
+            Teacher.new(person_data['name'], person_data['age'], person_data['specialization'])
+          end
+        end
+      rescue JSON::ParserError => e
+        puts "Error al analizar el archivo JSON: #{e.message}"
+        @people = []
+      end
+    else
+      @people = []
+    end
+  end
+  
+  
+  # def save_rentals_to_json
+  #   File.open('rentals.json', 'w') do |file|
+  #     file.puts @rentals.to_json
+  #   end
+  # end
+
+  # def load_rentals_from_json
+  #   if File.exist?('rentals.json')
+  #     @rentals = JSON.parse(File.read('rentals.json')).map do |rental_data|
+  #       book = @books.find { |book| book.title == rental_data['book']['title'] }
+  #       person = @people.find { |person| person.id == rental_data['person']['id'] }
+  #       Rental.new(rental_data['date'], book, person)
+  #     end
+  #   else
+  #     @rentals = []
+  #   end
+  # end
+
+  # to data project --------------------------
 
   private
 

@@ -10,4 +10,13 @@ class Book
   def add_rental(rental)
     rentals << rental
   end
+  
+  # to data project --------------------------
+  def to_json
+    {
+      title: @title,
+      author: @author
+    }
+  end
+  # to data project --------------------------
 end

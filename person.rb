@@ -22,10 +22,21 @@ class Person < Nameable
     @name
   end
 
-  # Este método debe ser público
   def add_rental(rental)
     rentals << rental
   end
+
+  # to data project --------------------------
+
+  def to_json(*args)
+    {
+      name: @name,
+      age: @age,
+      parent_permission: @parent_permission
+    }.to_json(*args)
+  end
+
+  # to data project --------------------------
 
   private
 

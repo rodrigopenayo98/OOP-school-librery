@@ -9,4 +9,14 @@ class Rental
     book.add_rental(self)
     person.add_rental(self)
   end
+
+  # to data project --------------------------
+  def to_json
+    {
+      date: @date,
+      book: @book.to_json,
+      person: @person.to_json
+    }
+  end
+  # to data project --------------------------
 end
