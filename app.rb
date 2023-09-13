@@ -57,7 +57,8 @@ class App
     @people.push(person)
     puts "Student '#{name}' created successfully"
     save_people_to_json
-  end
+  end  
+  
 
   def create_teacher
     print 'Age: '
@@ -66,7 +67,7 @@ class App
     name = gets.chomp
     print 'Specialization: '
     specialization = gets.chomp
-    person = Teacher.new(name, age, specialization)
+    person = Teacher.new(name: name, age: age, specialization: specialization)
     @people.push(person)
     puts "Teacher '#{name}' created successfully"
     save_people_to_json
@@ -165,7 +166,7 @@ class App
         @people = JSON.parse(File.read('people.json')).map do |person_data|
           if person_data.is_a?(Hash) && person_data.key?('type')
             if person_data['type'] == 'Student'
-              Student.new(person_data['name'], person_data['age'], person_data['parent_permission'])
+              Student.new(person_data['name'], person_data['age'], person_data['parent_permission'], person_data['classroom'])
             elsif person_data['type'] == 'Teacher'
               Teacher.new(person_data['name'], person_data['age'], person_data['specialization'])
             end
@@ -181,7 +182,7 @@ class App
     else
       @people = []
     end
-  end
+  end  
 
   def load_rentals_from_json
     if File.exist?('rentals.json')
@@ -205,8 +206,26 @@ class App
 
   def save_people_to_json
     begin
+      people_data = @people.map do |person|
+        if person.is_a?(Student)
+          {
+            id: person.id,
+            name: person.name,
+            age: person.age,
+            parent_permission: person.parent_permission,
+            classroom: person.classroom
+          }
+        elsif person.is_a?(Teacher)
+          {
+            id: person.id,
+            name: person.name,
+            age: person.age,
+            specialization: person.specialization
+          }
+        end
+      end
       File.open('people.json', 'w') do |file|
-        file.puts @people.to_json
+        file.puts people_data.to_json
       end
     rescue JSON::GeneratorError => e
       puts "Error al generar JSON: #{e.message}"
@@ -214,6 +233,13 @@ class App
       puts "Error desconocido al guardar datos en JSON: #{e.message}"
     end
   end
+  
+  
+  
+  
+  
+  
+  
 
   def save_books_to_json
     begin
