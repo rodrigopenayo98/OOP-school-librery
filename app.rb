@@ -21,14 +21,8 @@ class App
   def load_data
     load_people_from_json
     load_books_from_json
-    # load_rentals_from_json
+    load_rentals_from_json
   end
-
-  # def save_data
-  #   save_people_to_json
-  #   save_books_to_json
-  #   save_rentals_to_json
-  # end
 
   #------------- creations
 
@@ -125,20 +119,22 @@ class App
    
   
 
-   def list_rentals
-    if @rentals.empty?
-      puts 'There are no rentals to show'
+  def list_rentals
+    puts 'ID of person: '
+    person_id = gets.chomp.to_i
+    found_rentals = @rentals.select { |rental| rental.person.id == person_id }
+  
+    if found_rentals.empty?
+      puts "There are no rentals for the person with ID #{person_id}"
     else
-      puts 'ID of person: '
-      person_id = gets.chomp.to_i
-      puts 'Rentals: '
-      @rentals.each do |rental|
-        if person_id == rental.person.id
-          puts "Date: #{rental.date}, Book '#{rental.book.title}' by #{rental.book.author}"
-        end
+      puts 'Rentals:'
+      found_rentals.each do |rental|
+        puts "Date: #{rental.date}, Book '#{rental.book.title}' by #{rental.book.author}"
       end
     end
-  end  
+  end
+  
+  
 
    #------------- load date
 
