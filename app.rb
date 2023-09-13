@@ -46,9 +46,8 @@ class App
     print 'Name: '
     name = gets.chomp
     print 'Has parent permission? [Y/N]: '
-    parent_permission_input = gets.chomp.downcase
-    parent_permission = parent_permission_input == 'y'
-    person = Student.new(name, age, parent_permission)
+    gets.chomp.downcase
+    person = Student.new(name, age)
     @people.push(person)
     puts "Student '#{name}' created successfully"
     save_people_to_json
