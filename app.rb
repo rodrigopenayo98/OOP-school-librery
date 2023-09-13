@@ -16,7 +16,6 @@ class App
     @books = []
     @people = []
     @rentals = []
-    load_data
   end
 
   def load_data
@@ -136,63 +135,27 @@ class App
   #------------- load date
 
   def load_books_from_json
-    if File.exist?('books.json')
-      begin
-        @books = JSON.parse(File.read('books.json')).map do |book_data|
-          Book.new(book_data['title'], book_data['author'])
-        end
-      rescue JSON::ParserError => e
-        puts "Error al analizar el archivo JSON de libros: #{e.message}"
-        @books = []
-      end
-    else
-      @books = []
-    end
+    @books = load_from_json('books.json')
+    puts 'Books loaded successfully'
     @books.each do |book|
-      puts "Title: #{book.title}, Author: #{book.author}"
+      puts "Title: #{book['title']}, Author: #{book['author']}"
     end
   end
 
   def load_people_from_json
-    if File.exist?('people.json')
-      begin
-        @people = JSON.parse(File.read('people.json')).map do |person_data|
-          if person_data.is_a?(Hash) && person_data.key?('type')
-            if person_data['type'] == 'Student'
-              Student.new(person_data['name'], person_data['age'], person_data['parent_permission'],
-                          person_data['classroom'])
-            elsif person_data['type'] == 'Teacher'
-              Teacher.new(person_data['name'], person_data['age'], person_data['specialization'])
-            end
-          else
-            puts 'Error: At the moment the people JSON file is empty.'
-            nil
-          end
-        end.compact
-      rescue JSON::ParserError => e
-        puts "Error al analizar el archivo JSON: #{e.message}"
-        @people = []
-      end
-    else
-      @people = []
+    @people = load_from_json('people.json')
+    puts 'People loaded successfully:'
+    @people.each do |person|
+      type = person['type'] == 'student' ? 'Student' : 'Teacher'
+      puts "[#{type}] Name: #{person['name']}, Age: #{person['age']}"
     end
   end
 
   def load_rentals_from_json
-    if File.exist?('rentals.json')
-      begin
-        @rentals = JSON.parse(File.read('rentals.json')).map do |rental_data|
-          date = rental_data['date']
-          book = @books.find { |b| b.title == rental_data['book']['title'] }
-          person = @people.find { |p| p.name == rental_data['person']['name'] }
-          Rental.new(date, book, person) if date && book && person
-        end.compact
-      rescue JSON::ParserError => e
-        puts "Error al analizar el archivo JSON de alquileres: #{e.message}"
-        @rentals = []
-      end
-    else
-      @rentals = []
+    @rentals = load_from_json('rentals.json')
+    puts 'Rentals loaded successfully'
+    @rentals.each do |rental|
+      puts "Date: #{rental['date']}, Book: #{rental['book']}, Person: #{rental['person']}"
     end
   end
 
