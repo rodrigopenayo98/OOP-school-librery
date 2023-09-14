@@ -1,23 +1,26 @@
 class Rental
-  attr_accessor :date, :book, :person
+  attr_accessor :date, :title, :person, :person_id, :book_id
 
-  def initialize(date, book, person)
+  def initialize(date, title, person, person_id, book_id)
     @date = date
-    @book = book
+    @title = title
     @person = person
+    @person_id = person_id
+    @book_id = book_id
 
-    book.add_rental(self)
-    person.add_rental(self)
+    # book.add_rental(self)
+    # person.add_rental(self)
   end
 
   # to data project --------------------------
   def to_json(_options = {})
     {
       date: @date,
-      book: @book.to_json,
-      person: @person.to_json
+      title: @title,
+      person: @person.to_json,
+      person_id: @person_id,
+      book_id: @book_id
     }.to_json
   end
-
   # to data project --------------------------
 end

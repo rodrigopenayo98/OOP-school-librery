@@ -89,16 +89,30 @@ class App
     list_people
     selected_person = gets.chomp.to_i - 1
   
-    print 'Fecha: '
-    date = gets.chomp
+    date = ''
+    while date.empty?
+      print 'Fecha: '
+      date = gets.chomp
+    end
   
     load_rentals_from_json
   
-    rental = Rental.new(date, @books[selected_book], @people[selected_person])
+    book = @books[selected_book]
+    person = @people[selected_person]
+    
+    person_id = person.id
+    book_id = book.id
+  
+    rental = Rental.new(date, book.title, person, person_id, book_id)
+  
     @rentals.push(rental)
+    
     save_rentals_to_json
+  
     puts "Alquiler creado con éxito"
   end
+  
+   
   
 
   #------------- lists
@@ -140,18 +154,23 @@ class App
   #------------- load date
 
   def load_books_from_json
-    books_json = File.read('books.json')
-    books_data = JSON.parse(books_json)
+    if File.exist?('books.json')
+      books_json = File.read('books.json')
+      books_data = JSON.parse(books_json)
   
-    @books = books_data.map do |book_data|
-      Book.new(book_data['title'], book_data['author'])
-    end
+      @books = books_data.map do |book_data|
+        Book.new(book_data['title'], book_data['author'])
+      end
   
-    puts '----- Books loaded successfully -----'
-    @books.each do |book|
-      puts "Title: #{book.title}, Author: #{book.author}"
+      puts '----- Books loaded successfully -----'
+      @books.each do |book|
+        puts "Title: #{book.title}, Author: #{book.author}, ID: #{book.id}"
+      end
+    else
+      puts 'No book data found in books.json'
     end
   end
+  
   
   def load_people_from_json
     people_json = File.read('people.json')
@@ -159,18 +178,19 @@ class App
   
     @people = people_data.map do |person_data|
       if person_data['type'] == 'student'
-        Student.new(person_data['name'], person_data['age'], parent_permission: person_data['parent_permission'])
+        Student.new(person_data['name'], person_data['age'], person_data['parent_permission'], person_data['id'])
       else
-        Teacher.new(name: person_data['name'], age: person_data['age'], specialization: person_data['specialization'])
+        Teacher.new(name: person_data['name'],age: person_data['age'], specialization: person_data['specialization'])
       end
     end
   
     puts '----- People loaded successfully -----'
     @people.each do |person|
       type = person.is_a?(Student) ? 'Student' : 'Teacher'
-      puts "[#{type}] Name: #{person.name}, Age: #{person.age}"
+      puts "[#{type}] Name: #{person.name}, ID: #{person.id}, Age: #{person.age}"
     end
   end
+  
 
   
 
@@ -181,16 +201,20 @@ class App
       puts '----- Rentals loaded successfully -----'
       rentals_data.each do |rental_data|
         date = rental_data['date']
-  
-        book_title = rental_data['book_title']
-        person_name = rental_data['person']
-
-        puts "Person Name: #{person_name}, Date: #{date}, Book Title: #{book_title}"
+        title = rental_data['title']
+        person_id = rental_data['person_id']
+        book_id = rental_data['book_id']
+        person = @people.find { |p| p.id == person_id }
+        book = @books.find { |b| b.id == book_id }
+    
+        puts "Person Name: #{person.name}, Date: #{date}, Book Title: #{title}"
       end
     else
       puts 'No rental data found in rentals.json'
     end
   end
+  
+  
 
   #------------- save date
 
@@ -245,10 +269,10 @@ class App
       rentals_data = @rentals.map do |rental|
         {
           date: rental.date,
-          book_title: rental.book.title,
-          book_id: rental.book.id,
+          title: rental.title,
           person: rental.person.name,
-          person_id: rental.person.id
+          person_id: rental.person_id,
+          book_id: rental.book_id
         }
       end
       file.puts rentals_data.to_json

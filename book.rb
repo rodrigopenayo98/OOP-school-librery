@@ -5,15 +5,19 @@ class Book
     @title = title
     @author = author
     @rentals = []
-    @book_id = rand(1..1000)
+    @id = generate_id
   end
 
   def id
-    @book_id
+    @id
   end
 
   def add_rental(rental)
     rentals << rental
+  end
+
+  def generate_id
+    Random.rand(1...1000)
   end
 
   # to data project --------------------------
