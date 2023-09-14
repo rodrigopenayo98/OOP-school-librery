@@ -49,13 +49,13 @@ class App
     print 'Name: '
     name = gets.chomp
     print 'Has parent permission? [Y/N]: '
-    gets.chomp.downcase
-    person = Student.new(name, age)
+    parent_permission = gets.chomp.downcase == 'y'
+    person = Student.new(name, age, parent_permission: parent_permission, id: generate_id)
     @people.push(person)
     puts "Student '#{name}' created successfully"
     save_people_to_json
   end
-
+  
   def create_teacher
     print 'Age: '
     age = gets.chomp.to_i
@@ -63,18 +63,22 @@ class App
     name = gets.chomp
     print 'Specialization: '
     specialization = gets.chomp
-    person = Teacher.new(name: name, age: age, specialization: specialization)
+    person = Teacher.new(name: name, age: age, specialization: specialization, id: generate_id)
     @people.push(person)
     puts "Teacher '#{name}' created successfully"
     save_people_to_json
   end
+  
 
   def create_book
     print 'Title: '
     title = gets.chomp
     print 'Author: '
     author = gets.chomp
-    book = Book.new(title, author)
+    print 'ID (leave blank for random): '
+    id_input = gets.chomp
+    id = id_input.empty? ? Random.rand(1...1000) : id_input.to_i
+    book = Book.new(title, author, id: id)
     @books.push(book)
     puts "Book '#{title}' created successfully with ID: #{book.id}"
     save_books_to_json
@@ -99,18 +103,20 @@ class App
   
     book = @books[selected_book]
     person = @people[selected_person]
-    
+  
     person_id = person.id
     book_id = book.id
   
     rental = Rental.new(date, book.title, person, person_id, book_id)
   
     @rentals.push(rental)
-    
+  
     save_rentals_to_json
   
     puts "Alquiler creado con éxito"
+    puts "ID de la persona: #{person_id}, ID del libro: #{book_id}"
   end
+  
   
    
   
@@ -159,7 +165,7 @@ class App
       books_data = JSON.parse(books_json)
   
       @books = books_data.map do |book_data|
-        Book.new(book_data['title'], book_data['author'])
+        Book.new(book_data['title'], book_data['author'], id: book_data['book.id'])
       end
   
       puts '----- Books loaded successfully -----'
@@ -169,8 +175,7 @@ class App
     else
       puts 'No book data found in books.json'
     end
-  end
-  
+  end  
   
   def load_people_from_json
     people_json = File.read('people.json')
@@ -180,7 +185,7 @@ class App
       if person_data['type'] == 'student'
         Student.new(person_data['name'], person_data['age'], person_data['parent_permission'], person_data['id'])
       else
-        Teacher.new(name: person_data['name'],age: person_data['age'], specialization: person_data['specialization'])
+        Teacher.new(name: person_data['name'],age: person_data['age'], specialization: person_data['specialization'], id: person_data['id'])
       end
     end
   
@@ -206,13 +211,18 @@ class App
         book_id = rental_data['book_id']
         person = @people.find { |p| p.id == person_id }
         book = @books.find { |b| b.id == book_id }
-    
-        puts "Person Name: #{person.name}, Date: #{date}, Book Title: #{title}"
+  
+        if person.nil?
+          puts "Person with ID #{person_id} not found, Date: #{date}, Book Title: #{title}"
+        else
+          puts "Person Name: #{person.name}, Date: #{date}, Book Title: #{title}"
+        end
       end
     else
       puts 'No rental data found in rentals.json'
     end
   end
+  
   
   
 
