@@ -5,6 +5,11 @@ class Book
     @title = title
     @author = author
     @rentals = []
+    @book_id = rand(1..1000)
+  end
+
+  def id
+    @book_id
   end
 
   def add_rental(rental)
@@ -15,8 +20,10 @@ class Book
   def to_json(_options = {})
     {
       title: @title,
-      author: @author
+      author: @author,
+      "book.id": @book_id
     }.to_json
   end
   # to data project --------------------------
 end
+
