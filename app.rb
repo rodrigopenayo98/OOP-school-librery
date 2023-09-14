@@ -50,7 +50,8 @@ class App
     name = gets.chomp
     print 'Has parent permission? [Y/N]: '
     parent_permission = gets.chomp.downcase == 'y'
-    person = Student.new(name, age, parent_permission: parent_permission, id: generate_id)
+    id = Random.rand(1...1000) # Genera un ID único
+    person = Student.new(name, age, parent_permission: parent_permission, id: id)
     @people.push(person)
     puts "Student '#{name}' created successfully"
     save_people_to_json
@@ -63,7 +64,8 @@ class App
     name = gets.chomp
     print 'Specialization: '
     specialization = gets.chomp
-    person = Teacher.new(name: name, age: age, specialization: specialization, id: generate_id)
+    id = Random.rand(1...1000)
+    person = Teacher.new(name: name, age: age, specialization: specialization, id: id)
     @people.push(person)
     puts "Teacher '#{name}' created successfully"
     save_people_to_json
@@ -142,20 +144,20 @@ class App
     end
   end
 
-  # def list_rentals
-  #   puts 'ID of person: '
-  #   person_id = gets.chomp.to_i
-  #   found_rentals = @rentals.select { |rental| rental.person.id == person_id }
+   def list_rentals
+     puts 'ID of person: '
+     person_id = gets.chomp.to_i
+     found_rentals = @rentals.select { |rental| rental.person.id == person_id }
   
-  #   if found_rentals.empty?
-  #     puts "There are no rentals for the person with ID #{person_id}"
-  #   else
-  #     puts 'Rentals:'
-  #     found_rentals.each do |rental|
-  #       puts "Date: #{rental.date}, Book '#{rental.book.title}' by #{rental.book.author}"
-  #     end
-  #   end
-  # end
+     if found_rentals.empty?
+       puts "There are no rentals for the person with ID #{person_id}"
+     else
+       puts 'Rentals:'
+       found_rentals.each do |rental|
+         puts "Date: #{rental.date}, Book '#{rental.book.title}' by #{rental.book.author}"
+       end
+     end
+   end
   
   #------------- load date
 
