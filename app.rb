@@ -175,7 +175,8 @@ class App
     else
       puts 'No book data found in books.json'
     end
-  end  
+  end
+   
   
   def load_people_from_json
     people_json = File.read('people.json')
