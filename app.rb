@@ -73,14 +73,13 @@ class App
     title = gets.chomp
     print 'Author: '
     author = gets.chomp
-    print 'ID (leave blank for random): '
-    id_input = gets.chomp
-    id = id_input.empty? ? Random.rand(1...1000) : id_input.to_i
+    id = Random.rand(1...1000)
     book = Book.new(title, author, id: id)
     @books.push(book)
     puts "Book '#{title}' created successfully with ID: #{book.id}"
     save_books_to_json
   end
+  
 
   def create_rental
     return puts 'There are no books yet.' if @books.empty?
