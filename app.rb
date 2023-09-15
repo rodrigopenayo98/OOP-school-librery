@@ -128,7 +128,7 @@ class App
       elsif person.instance_of?(Teacher)
         type = 'Teacher'
       end
-
+      puts "List of people:"
       puts "#{index + 1} - [#{type}] Name: #{person.name}, ID: #{person.id}, Age: #{person.age}"
     end
   end
@@ -157,11 +157,6 @@ class App
 
       @books = books_data.map do |book_data|
         Book.new(book_data['title'], book_data['author'], id: book_data['book.id'])
-      end
-
-      puts '----- Books loaded successfully -----'
-      @books.each do |book|
-        puts "Title: #{book.title}, Author: #{book.author}, ID: #{book.id}"
       end
     else
       puts 'No book data found in books.json'
