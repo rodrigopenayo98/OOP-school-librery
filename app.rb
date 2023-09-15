@@ -204,7 +204,7 @@ end
     if File.exist?('rentals.json')
       rentals_json = File.read('rentals.json')
       rentals_data = JSON.parse(rentals_json)
-      load_people_from_jso
+      load_people_from_json
       puts "Enter a person's ID to see if they have rented books:"
       id = gets.chomp.to_i
   
