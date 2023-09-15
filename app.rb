@@ -18,7 +18,7 @@ class App
   def load_data_if_needed
     return if @loaded_data
 
-    load_people_from_json
+   
     load_books_from_json
     @loaded_data = true
   end
@@ -122,16 +122,47 @@ class App
   end
 
   def list_people
-  puts 'List of people:'
-  @people.each_with_index do |person, index|
-    if person.instance_of?(Student)
-      type = 'Student'
-    elsif person.instance_of?(Teacher)
-      type = 'Teacher'
+    if File.exist?('people.json')
+      begin
+        people_json = File.read('people.json')
+        people_data = JSON.parse(people_json)
+  
+        @people = people_data.map.with_index(1) do |person_data, index|
+          if person_data['type'] == 'student'
+            Student.new(
+              person_data['name'],
+              person_data['age'],
+              parent_permission: person_data['parent_permission'],
+              id: person_data['id']
+            )
+          elsif person_data['type'] == 'teacher'
+            Teacher.new(
+              name: person_data['name'],
+              age: person_data['age'],
+              specialization: person_data['specialization'],
+              id: person_data['id']
+            )
+          else
+            puts "Unknown person type: #{person_data['type']}"
+            nil
+          end.tap do |person|
+            type = person.is_a?(Student) ? 'Student' : 'Teacher'
+            puts "#{index} - [#{type}] Name: #{person.name}, ID: #{person.id}, Age: #{person.age}"
+          end
+        end.compact
+  
+        puts '----- People loaded successfully -----'
+      rescue JSON::ParserError => e
+        puts "Error parsing JSON data: #{e.message}"
+      rescue StandardError => e
+        puts "Error loading data from JSON: #{e.message}"
+      end
+    else
+      puts 'No person data found in people.json'
     end
-    puts "#{index + 1} - [#{type}] Name: #{person.name}, ID: #{person.id}, Age: #{person.age}"
   end
-end
+  
+  
 
 
   def list_rentals
@@ -164,47 +195,11 @@ end
     end
   end
 
-  def load_people_from_json
-    if File.exist?('people.json')
-      people_json = File.read('people.json')
-      people_data = JSON.parse(people_json)
-
-      @people = people_data.map do |person_data|
-        if person_data['type'] == 'student'
-          Student.new(
-            person_data['name'],
-            person_data['age'],
-            parent_permission: person_data['parent_permission'],
-            id: person_data['id']
-          )
-        elsif person_data['type'] == 'teacher'
-          Teacher.new(
-            name: person_data['name'],
-            age: person_data['age'],
-            specialization: person_data['specialization'],
-            id: person_data['id']
-          )
-        else
-          puts "Unknown person type: #{person_data['type']}"
-          nil
-        end
-      end.compact
-
-      puts '----- People loaded successfully -----'
-      @people.each do |person|
-        type = person.is_a?(Student) ? 'Student' : 'Teacher'
-        puts "[#{type}] Name: #{person.name}, ID: #{person.id}, Age: #{person.age}"
-      end
-    else
-      puts 'No person data found in people.json'
-    end
-  end
-
   def display_rentals_by_person_id
     if File.exist?('rentals.json')
       rentals_json = File.read('rentals.json')
       rentals_data = JSON.parse(rentals_json)
-      load_people_from_json
+     list_people
       puts "Enter a person's ID to see if they have rented books:"
       id = gets.chomp.to_i
   
