@@ -122,16 +122,17 @@ class App
   end
 
   def list_people
-    @people.each_with_index do |person, index|
-      if person.instance_of?(Student)
-        type = 'Student'
-      elsif person.instance_of?(Teacher)
-        type = 'Teacher'
-      end
-      puts "List of people:"
-      puts "#{index + 1} - [#{type}] Name: #{person.name}, ID: #{person.id}, Age: #{person.age}"
+  puts 'List of people:'
+  @people.each_with_index do |person, index|
+    if person.instance_of?(Student)
+      type = 'Student'
+    elsif person.instance_of?(Teacher)
+      type = 'Teacher'
     end
+    puts "#{index + 1} - [#{type}] Name: #{person.name}, ID: #{person.id}, Age: #{person.age}"
   end
+end
+
 
   def list_rentals
     puts 'ID of person: '
@@ -203,7 +204,7 @@ class App
     if File.exist?('rentals.json')
       rentals_json = File.read('rentals.json')
       rentals_data = JSON.parse(rentals_json)
-      load_people_from_json
+      load_people_from_jso
       puts "Enter a person's ID to see if they have rented books:"
       id = gets.chomp.to_i
   
