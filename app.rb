@@ -79,7 +79,6 @@ class App
     puts "Book '#{title}' created successfully with ID: #{book.id}"
     save_books_to_json
   end
-  
 
   def create_rental
     return puts 'There are no books yet.' if @books.empty?
@@ -170,22 +169,38 @@ class App
   end
 
   def load_people_from_json
-    people_json = File.read('people.json')
-    people_data = JSON.parse(people_json)
+    if File.exist?('people.json')
+      people_json = File.read('people.json')
+      people_data = JSON.parse(people_json)
 
-    @people = people_data.map do |person_data|
-      if person_data['type'] == 'student'
-        Student.new(person_data['name'], person_data['age'], person_data['parent_permission'], person_data['id'])
-      else
-        Teacher.new(name: person_data['name'], age: person_data['age'], specialization: person_data['specialization'],
-                    id: person_data['id'])
+      @people = people_data.map do |person_data|
+        if person_data['type'] == 'student'
+          Student.new(
+            person_data['name'],
+            person_data['age'],
+            parent_permission: person_data['parent_permission'],
+            id: person_data['id']
+          )
+        elsif person_data['type'] == 'teacher'
+          Teacher.new(
+            name: person_data['name'],
+            age: person_data['age'],
+            specialization: person_data['specialization'],
+            id: person_data['id']
+          )
+        else
+          puts "Unknown person type: #{person_data['type']}"
+          nil
+        end
+      end.compact
+
+      puts '----- People loaded successfully -----'
+      @people.each do |person|
+        type = person.is_a?(Student) ? 'Student' : 'Teacher'
+        puts "[#{type}] Name: #{person.name}, ID: #{person.id}, Age: #{person.age}"
       end
-    end
-
-    puts '----- People loaded successfully -----'
-    @people.each do |person|
-      type = person.is_a?(Student) ? 'Student' : 'Teacher'
-      puts "[#{type}] Name: #{person.name}, ID: #{person.id}, Age: #{person.age}"
+    else
+      puts 'No person data found in people.json'
     end
   end
 
@@ -227,6 +242,7 @@ class App
     people_data = @people.map do |person|
       if person.is_a?(Student)
         {
+          type: 'student',
           id: person.id,
           name: person.name,
           age: person.age,
@@ -235,20 +251,25 @@ class App
         }
       elsif person.is_a?(Teacher)
         {
+          type: 'teacher',
           id: person.id,
           name: person.name,
           age: person.age,
           specialization: person.specialization
         }
+      else
+        puts "Unknown person type: #{person.class}"
+        nil
       end
-    end
+    end.compact
+
     File.open('people.json', 'w') do |file|
-      file.puts people_data.to_json
+      file.puts JSON.pretty_generate(people_data)
     end
   rescue JSON::GeneratorError => e
-    puts "Error al generar JSON: #{e.message}"
+    puts "Error al generar JSON de personas: #{e.message}"
   rescue StandardError => e
-    puts "Error desconocido al guardar datos en JSON: #{e.message}"
+    puts "Error desconocido al guardar datos en JSON de personas: #{e.message}"
   end
 
   def save_books_to_json
@@ -271,7 +292,7 @@ class App
   def save_rentals
     rentals_data = @rentals.map do |rental|
       {
-        
+
         date: rental.date,
         book: {
           title: rental.book.title,
