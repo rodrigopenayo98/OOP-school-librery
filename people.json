@@ -1,17 +1,2 @@
 [
-  {
-    "type": "student",
-    "id": 132,
-    "name": "Rod",
-    "age": 25,
-    "parent_permission": true,
-    "classroom": null
-  },
-  {
-    "type": "teacher",
-    "id": 179,
-    "name": "Ana",
-    "age": 66,
-    "specialization": "Geografia"
-  }
 ]

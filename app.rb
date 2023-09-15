@@ -18,14 +18,10 @@ class App
   def load_data_if_needed
     return if @loaded_data
 
-   
+
     load_books_from_json
     @loaded_data = true
   end
-
-
-
-  #------------- creations
 
   def create_person
     print 'Do you want to create a student (1) or a teacher (2)? [Input the number]: '
@@ -47,7 +43,7 @@ class App
     name = gets.chomp
     print 'Has parent permission? [Y/N]: '
     parent_permission = gets.chomp.downcase == 'y'
-    id = Random.rand(1...1000) # Genera un ID único
+    id = Random.rand(1...1000)
     person = Student.new(name, age, parent_permission: parent_permission, id: id)
     @people.push(person)
     puts "Student '#{name}' created successfully"
@@ -96,7 +92,7 @@ class App
     puts 'Select a person from the following list by number (not id)'
     list_people
 
-    people_choice = gets.chomp.to_i - 1 # Subtract 1 to map to array index
+    people_choice = gets.chomp.to_i - 1
 
     if people_choice.negative? || people_choice >= @people.length
       puts 'Invalid input! Please enter a number within the range.'
@@ -112,8 +108,6 @@ class App
     save_rentals
   end
 
-  #------------- lists
-
   def list_books
     puts 'List of Books:'
     @books.each_with_index do |book, index|
@@ -122,11 +116,12 @@ class App
   end
 
   def list_people
+    puts '----- People loaded successfully -----'
     if File.exist?('people.json')
       begin
         people_json = File.read('people.json')
         people_data = JSON.parse(people_json)
-  
+
         @people = people_data.map.with_index(1) do |person_data, index|
           if person_data['type'] == 'student'
             Student.new(
@@ -150,8 +145,6 @@ class App
             puts "#{index} - [#{type}] Name: #{person.name}, ID: #{person.id}, Age: #{person.age}"
           end
         end.compact
-  
-        puts '----- People loaded successfully -----'
       rescue JSON::ParserError => e
         puts "Error parsing JSON data: #{e.message}"
       rescue StandardError => e
@@ -161,9 +154,6 @@ class App
       puts 'No person data found in people.json'
     end
   end
-  
-  
-
 
   def list_rentals
     puts 'ID of person: '
@@ -179,8 +169,6 @@ class App
       end
     end
   end
-
-  #------------- load date
 
   def load_books_from_json
     if File.exist?('books.json')
@@ -199,30 +187,30 @@ class App
     if File.exist?('rentals.json')
       rentals_json = File.read('rentals.json')
       rentals_data = JSON.parse(rentals_json)
-     list_people
+      list_people
       puts "Enter a person's ID to see if they have rented books:"
       id = gets.chomp.to_i
-  
+
       found_rentals = []
       found_name = nil
-  
+
       @people.each do |person|
         if person.id == id
           found_name = person.name
           break
         end
       end
-  
+
       rentals_data.each do |rental_data|
         person_id = rental_data['person']['id']
         next unless person_id == id
-  
+
         book_title = rental_data['book']['title']
         book_author = rental_data['book']['author']
         rental_date = rental_data['date']
         found_rentals << { title: book_title, author: book_author, date: rental_date }
       end
-  
+
       if found_rentals.empty?
         puts "No rentals found for person ID #{id}."
       else
@@ -235,9 +223,6 @@ class App
       puts 'No rental data found in rentals.json'
     end
   end
-  
-
-  #------------- save date
 
   def save_people_to_json
     people_data = @people.map do |person|
@@ -315,8 +300,6 @@ class App
       file.puts JSON.pretty_generate(rentals_data)
     end
   end
-
-  #------------- display menu
 
   def run
     loop do

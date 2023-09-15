@@ -26,8 +26,6 @@ class Person < Nameable
     rentals << rental
   end
 
-  # to data project --------------------------
-
   def to_json(*args)
     {
       id: @id,
@@ -36,8 +34,6 @@ class Person < Nameable
       parent_permission: @parent_permission
     }.to_json(*args)
   end
-
-  # to data project --------------------------
 
   private
 

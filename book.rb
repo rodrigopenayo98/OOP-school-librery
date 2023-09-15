@@ -1,11 +1,11 @@
 class Book
-  attr_accessor :title, :author, :rentals, :id  # Corrige :id aquí
+  attr_accessor :title, :author, :rentals, :id
 
   def initialize(title, author, id: Random.rand(1...1000))
     @title = title
     @author = author
     @rentals = []
-    @id = id  # Corrige @book_id a @id aquí
+    @id = id
   end
 
   def add_rental(rental)
@@ -16,9 +16,7 @@ class Book
     {
       title: @title,
       author: @author,
-      "book.id": @id  # Corrige @book_id a @id aquí
+      'book.id': @id
     }.to_json
   end
 end
-
-
