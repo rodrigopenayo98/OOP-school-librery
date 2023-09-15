@@ -209,24 +209,33 @@ class App
       rentals_json = File.read('rentals.json')
       rentals_data = JSON.parse(rentals_json)
       load_people_from_json
-      puts 'Enter person ID:'
+      puts "Enter a person's ID to see if they have rented books:"
       id = gets.chomp.to_i
-
+  
       found_rentals = []
+      found_name = nil
+  
+      @people.each do |person|
+        if person.id == id
+          found_name = person.name
+          break
+        end
+      end
+  
       rentals_data.each do |rental_data|
         person_id = rental_data['person']['id']
         next unless person_id == id
-
+  
         book_title = rental_data['book']['title']
         book_author = rental_data['book']['author']
         rental_date = rental_data['date']
         found_rentals << { title: book_title, author: book_author, date: rental_date }
       end
-
+  
       if found_rentals.empty?
         puts "No rentals found for person ID #{id}."
       else
-        puts "Rentals for person ID #{id}:"
+        puts "#{found_name}'s rented books:"
         found_rentals.each do |rental|
           puts "Date: #{rental[:date]}, Book '#{rental[:title]}' by #{rental[:author]}"
         end
@@ -235,6 +244,7 @@ class App
       puts 'No rental data found in rentals.json'
     end
   end
+  
 
   #------------- save date
 
